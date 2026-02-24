@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrAbel Studios | Premium Web Design - Waitlist</title>
+    <meta name="description"
+        content="Join the exclusive waitlist for BrAbel Studios. Premium web design and development.">
+
+    <link rel="canonical" href="https://brabelstudios.com/">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="icon" type="image/jpeg" href="assets/images/logo.jpeg">
+
+    <style>
+        /* Waitlist Specific Styles */
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: var(--color-background);
+        }
+
+        .waitlist-wrapper {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: var(--spacing-3xl) var(--spacing-lg);
+            z-index: 10;
+        }
+
+        /* Fixed Dark Background with Hex Canvas */
+        .waitlist-bg {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .waitlist-content {
+            position: relative;
+            z-index: 20;
+            width: 100%;
+            max-width: 620px;
+            text-align: center;
+            animation: fadeIn 1.2s ease-out;
+            background: rgba(20, 20, 25, 0.6);
+            padding: var(--spacing-3xl) var(--spacing-2xl);
+            border-radius: var(--radius-2xl);
+            border: 1px solid var(--color-border);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            margin: auto;
+        }
+
+        .waitlist-logo {
+            font-family: var(--font-display);
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            margin-bottom: var(--spacing-xl);
+            display: inline-block;
+        }
+
+        .waitlist-badge {
+            display: inline-block;
+            padding: var(--spacing-sm) var(--spacing-xl);
+            background: rgba(234, 88, 12, 0.1);
+            border: 1px solid rgba(234, 88, 12, 0.3);
+            border-radius: var(--radius-full);
+            color: var(--color-primary);
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .waitlist-title {
+            font-size: var(--font-size-5xl);
+            line-height: 1.1;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .waitlist-desc {
+            font-size: var(--font-size-lg);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-2xl);
+            line-height: 1.6;
+        }
+
+        /* Form Styles */
+        .waitlist-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        @media (min-width: 640px) {
+            .waitlist-form {
+                flex-direction: row;
+            }
+        }
+
+        .waitlist-input {
+            flex: 1;
+            padding: 0 var(--spacing-lg);
+            height: 54px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            color: var(--color-text-primary);
+            font-size: var(--font-size-base);
+            font-family: var(--font-primary);
+            transition: all var(--transition-base);
+        }
+
+        .waitlist-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
+        }
+
+        .waitlist-btn {
+            height: 54px;
+            padding: 0 var(--spacing-2xl);
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: var(--font-size-base);
+            font-family: var(--font-display);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            white-space: nowrap;
+        }
+
+        .waitlist-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* ---- Countdown Timer ---- */
+        .countdown-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .countdown-label {
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .countdown-grid {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-md);
+        }
+
+        .countdown-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-width: 72px;
+        }
+
+        .countdown-box {
+            width: 72px;
+            height: 72px;
+            background: rgba(234, 88, 12, 0.08);
+            border: 1px solid rgba(234, 88, 12, 0.25);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: var(--font-size-3xl);
+            font-weight: 800;
+            color: var(--color-text-primary);
+            position: relative;
+            overflow: hidden;
+            transition: border-color var(--transition-base);
+        }
+
+        .countdown-box::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 50%);
+        }
+
+        .countdown-unit-label {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* ---- Card Divider ---- */
+        .card-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+            margin: var(--spacing-xl) 0;
+        }
+
+        /* ---- Features Strip ---- */
+        .features-strip {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md) var(--spacing-sm);
+            background: rgba(234, 88, 12, 0.05);
+            border: 1px solid rgba(234, 88, 12, 0.12);
+            border-radius: var(--radius-lg);
+            transition: all var(--transition-base);
+        }
+
+        .feature-item:hover {
+            background: rgba(234, 88, 12, 0.1);
+            border-color: rgba(234, 88, 12, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .feature-label {
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            color: var(--color-text-primary);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* ---- Social Proof ---- */
+        .social-proof {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .avatar-stack {
+            display: flex;
+        }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 2px solid var(--color-background);
+            margin-left: -10px;
+            font-family: var(--font-display);
+            font-size: var(--font-size-xs);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .avatar:first-child {
+            margin-left: 0;
+        }
+
+        .av1 {
+            background: hsl(20, 90%, 45%);
+        }
+
+        .av2 {
+            background: hsl(32, 90%, 48%);
+        }
+
+        .av3 {
+            background: hsl(200, 70%, 45%);
+        }
+
+        .av4 {
+            background: hsl(280, 65%, 50%);
+        }
+
+        .av5 {
+            background: hsl(150, 60%, 40%);
+        }
+
+        .social-proof-text {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            line-height: 1.4;
+        }
+
+        .social-proof-text strong {
+            color: var(--color-text-primary);
+            font-weight: 600;
+        }
+
+        /* Footer Socials matching the previous ones */
+        .waitlist-footer {
+            margin-top: var(--spacing-lg);
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            opacity: 0.7;
+            transition: opacity var(--transition-base);
+        }
+
+        .waitlist-footer:hover {
+            opacity: 1;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 50%;
+            color: var(--color-text-secondary);
+            transition: all var(--transition-base);
+        }
+
+        .social-link:hover {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Simple loading overlay for form */
+        #formMessage {
+            display: none;
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+        }
+
+        .msg-success {
+            background: rgba(39, 201, 63, 0.1);
+            color: #27c93f;
+            border: 1px solid rgba(39, 201, 63, 0.3);
+        }
+
+        .msg-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Jigsaw Canvas Background */
+        #jigsaw-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            animation: puzzlePulse 8s ease-in-out infinite;
+        }
+
+        @keyframes puzzlePulse {
+
+            0%,
+            100% {
+                opacity: 0.38;
+            }
+
+            50% {
+                opacity: 0.55;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="waitlist-bg">
+        <!-- Jigsaw puzzle grid pattern -->
+        <canvas id="jigsaw-canvas"></canvas>
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <main class="waitlist-wrapper">
+        <div class="waitlist-content">
+
+            <!-- Logo + Badge -->
+            <div class="waitlist-logo">
+                <span class="logo-pixel">BrAbel</span><span class="logo-craft">Studios</span>
+            </div>
+            <div class="waitlist-badge">Coming Soon</div>
+
+            <!-- Headline -->
+            <h1 class="waitlist-title">Something Extraordinary is <span class="gradient-text">Brewing</span></h1>
+
+            <p class="waitlist-desc">
+                We are crafting an exclusive, premium web design experience for visionary brands.
+                Join the VIP waitlist and be first through the door.
+            </p>
+
+            <!-- ===== COUNTDOWN TIMER ===== -->
+            <div class="countdown-section">
+                <p class="countdown-label">Launching in</p>
+                <div class="countdown-grid">
+                    <div class="countdown-unit">
+                        <div class="countdown-box" id="cd-days">00</div>
+                        <span class="countdown-unit-label">Days</span>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-box" id="cd-hours">00</div>
+                        <span class="countdown-unit-label">Hours</span>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-box" id="cd-mins">00</div>
+                        <span class="countdown-unit-label">Mins</span>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-box" id="cd-secs">00</div>
+                        <span class="countdown-unit-label">Secs</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card-divider"></div>
+
+            <!-- ===== SOCIAL PROOF ===== -->
+            <div class="social-proof">
+                <div class="avatar-stack">
+                    <div class="avatar av1">A</div>
+                    <div class="avatar av2">K</div>
+                    <div class="avatar av3">M</div>
+                    <div class="avatar av4">J</div>
+                    <div class="avatar av5">R</div>
+                </div>
+                <p class="social-proof-text">
+                    <strong><span id="waitlist-count"></span>200</span>+ people</strong> already on the waitlist
+                </p>
+            </div>
+
+            <!-- ===== FORM ===== -->
+            <form id="waitlistForm" action="https://formsubmit.co/brabelstudios@gmail.com" method="POST"
+                class="waitlist-form">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_subject" value="New VIP Waitlist Signup!">
+                <input type="hidden" name="_next" value="https://brabelstudios.com/">
+                <input type="hidden" name="_template" value="box">
+                <input type="hidden" name="_autoresponse"
+                    value="Hi there! 👋 You've officially been added to the BrAbel Studios VIP Waitlist. We'll be in touch as soon as we open our doors. — The BrAbel Studios Team">
+                <input type="email" name="email" class="waitlist-input" placeholder="Enter your email address" required
+                    aria-label="Email address">
+                <button type="submit" class="waitlist-btn">Join Waitlist</button>
+            </form>
+
+            <div id="formMessage"></div>
+
+            <!-- ===== CONTACT FOOTER ===== -->
+            <div class="waitlist-footer">
+                <a href="mailto:brabelstudios@gmail.com" aria-label="Email" class="social-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                </a>
+                <a href="tel:+233509563068" aria-label="Phone" class="social-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.66A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z" />
+                    </svg>
+                </a>
+                <a href="https://wa.me/233509563068" aria-label="WhatsApp" class="social-link" target="_blank"
+                    rel="noopener">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                    </svg>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        /* =============================================
+           HEXAGON GRID BACKGROUND CANVAS
+           ============================================= */
+        (function () {
+            const canvas = document.getElementById('jigsaw-canvas');
+            const ctx = canvas.getContext('2d');
+
+            const R = 42;          // hex circumradius (px)
+            const SQRT3 = Math.sqrt(3);
+
+            let hexes = [];
+            let raf;
+            let lastTs = 0;
+
+            /* ---------- build flat hex grid ---------- */
+            function buildGrid() {
+                hexes = [];
+                const colW = SQRT3 * R;           // pointy-top: width  = √3·R
+                const rowH = R * 1.5;             //             height = 1.5·R per row
+
+                const cols = Math.ceil(canvas.width / colW) + 3;
+                const rows = Math.ceil(canvas.height / rowH) + 3;
+
+                for (let row = -1; row < rows; row++) {
+                    for (let col = -1; col < cols; col++) {
+                        // offset every odd row by half a column width
+                        const cx = col * colW + (row % 2 !== 0 ? colW / 2 : 0);
+                        const cy = row * rowH + R;
+                        hexes.push({
+                            cx, cy,
+                            glow: 0,      // current brightness  0 → 1
+                            peak: 0,      // target brightness
+                            fadeIn: false,
+                            active: false
+                        });
+                    }
+                }
+            }
+
+            /* ---------- draw a single pointy-top hex ---------- */
+            function hexPath(cx, cy, r) {
+                ctx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const angle = (Math.PI / 180) * (60 * i - 30);
+                    const px = cx + r * Math.cos(angle);
+                    const py = cy + r * Math.sin(angle);
+                    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+                }
+                ctx.closePath();
+            }
+
+            /* ---------- main animation loop ---------- */
+            function draw(ts) {
+                const dt = Math.min(ts - lastTs, 50); // cap delta to avoid jumps
+                lastTs = ts;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                /* randomly wake hexes */
+                hexes.forEach(h => {
+                    if (!h.active && Math.random() < 0.0015) {
+                        h.active = true;
+                        h.fadeIn = true;
+                        h.glow = 0;
+                        h.peak = 0.35 + Math.random() * 0.55;
+                        h.speed = 0.0006 + Math.random() * 0.001;
+                    }
+                });
+
+                /* update + render each hex */
+                hexes.forEach(h => {
+                    /* advance glow */
+                    if (h.active) {
+                        if (h.fadeIn) {
+                            h.glow += h.speed * dt;
+                            if (h.glow >= h.peak) { h.glow = h.peak; h.fadeIn = false; }
+                        } else {
+                            h.glow -= h.speed * 0.65 * dt;
+                            if (h.glow <= 0) { h.glow = 0; h.active = false; }
+                        }
+                    }
+
+                    hexPath(h.cx, h.cy, R - 1.5);
+
+                    /* inner glow fill */
+                    if (h.glow > 0) {
+                        const alpha = h.glow * 0.18;
+                        ctx.fillStyle = `rgba(234,88,12,${alpha})`;
+                        ctx.fill();
+
+                        /* inner radial glow */
+                        const rg = ctx.createRadialGradient(h.cx, h.cy, 0, h.cx, h.cy, R);
+                        rg.addColorStop(0, `rgba(255,140,50,${h.glow * 0.22})`);
+                        rg.addColorStop(0.5, `rgba(234,88,12,${h.glow * 0.10})`);
+                        rg.addColorStop(1, 'rgba(234,88,12,0)');
+                        ctx.fillStyle = rg;
+                        ctx.fill();
+                    }
+
+                    /* hex border */
+                    const borderAlpha = 0.08 + h.glow * 0.6;
+                    ctx.strokeStyle = `rgba(234,88,12,${borderAlpha})`;
+                    ctx.lineWidth = h.glow > 0 ? 1.5 : 0.8;
+                    ctx.stroke();
+                });
+
+                /* radial vignette — darkens edges, focuses centre */
+                const vig = ctx.createRadialGradient(
+                    canvas.width / 2, canvas.height / 2, canvas.width * 0.05,
+                    canvas.width / 2, canvas.height / 2, canvas.width * 0.72
+                );
+                vig.addColorStop(0, 'rgba(13,13,20,0)');
+                vig.addColorStop(1, 'rgba(13,13,20,0.88)');
+                ctx.fillStyle = vig;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                raf = requestAnimationFrame(draw);
+            }
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                buildGrid();
+            }
+
+            window.addEventListener('resize', () => {
+                cancelAnimationFrame(raf);
+                resize();
+                lastTs = performance.now();
+                raf = requestAnimationFrame(draw);
+            });
+
+            resize();
+            lastTs = performance.now();
+            raf = requestAnimationFrame(draw);
+        })();
+
+        /* =============================================
+           COUNTDOWN TIMER
+           ============================================= */
+        (function () {
+            // Launch date: 2nd March 2026
+            const launch = new Date('2026-03-02T00:00:00');
+
+            const pad = n => String(n).padStart(2, '0');
+
+            const elDays = document.getElementById('cd-days');
+            const elHours = document.getElementById('cd-hours');
+            const elMins = document.getElementById('cd-mins');
+            const elSecs = document.getElementById('cd-secs');
+
+            function tick() {
+                const diff = launch - Date.now();
+                if (diff <= 0) {
+                    elDays.textContent = elHours.textContent =
+                        elMins.textContent = elSecs.textContent = '00';
+                    return;
+                }
+                const d = Math.floor(diff / 86400000);
+                const h = Math.floor((diff % 86400000) / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+
+                elDays.textContent = pad(d);
+                elHours.textContent = pad(h);
+                elMins.textContent = pad(m);
+                elSecs.textContent = pad(s);
+
+                /* brief orange flash on the seconds box each tick */
+                elSecs.style.borderColor = 'rgba(234,88,12,0.7)';
+                setTimeout(() => { elSecs.style.borderColor = ''; }, 200);
+            }
+
+            tick();
+            setInterval(tick, 1000);
+        })();
+
+        /* =============================================
+           WAITLIST COUNT  (CountAPI shared + localStorage fallback)
+           ============================================= */
+        (function () {
+            const NS = 'brabelstudios.com';
+            const KEY = 'waitlist';
+            const BASE = 200;   // offset so API-value 0 displays as 200
+            const LOCAL_KEY = 'brabel_waitlist_api_count';
+            const countEl = document.getElementById('waitlist-count');
+
+            function display(apiVal) {
+                const n = (parseInt(apiVal, 10) || 0) + BASE;
+                countEl.textContent = n;
+                localStorage.setItem(LOCAL_KEY, parseInt(apiVal, 10) || 0);
+            }
+
+            // Show cached value instantly, then refresh from API
+            display(localStorage.getItem(LOCAL_KEY) || 0);
+
+            fetch(`https://api.countapi.xyz/get/${NS}/${KEY}`)
+                .then(r => r.json())
+                .then(d => display(d.value))
+                .catch(() => { /* keep cached/local value */ });
+
+            /* =============================================
+               FORM UX
+               ============================================= */
+            const form = document.getElementById('waitlistForm');
+            const btn = form.querySelector('.waitlist-btn');
+
+            form.addEventListener('submit', (e) => {
+                btn.innerHTML = 'Adding to list...';
+                btn.disabled = true;
+                btn.style.opacity = '0.7';
+
+                // Hit API to increment shared count
+                fetch(`https://api.countapi.xyz/hit/${NS}/${KEY}`)
+                    .then(r => r.json())
+                    .then(d => {
+                        display(d.value);
+                        // Animate the bump
+                        countEl.style.transition = 'transform 0.2s ease';
+                        countEl.style.transform = 'scale(1.4)';
+                        countEl.style.color = 'var(--color-primary)';
+                        setTimeout(() => { countEl.style.transform = 'scale(1)'; }, 200);
+                    })
+                    .catch(() => {
+                        // Fallback: increment locally
+                        const local = parseInt(localStorage.getItem(LOCAL_KEY) || '0', 10);
+                        display(local + 1);
+                    });
+                // Native FormSubmit.co redirect handles the rest
+            });
+        })();
+    </script>
+</body>
+
+</html>
