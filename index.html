@@ -476,11 +476,10 @@
             </div>
 
             <!-- ===== FORM ===== -->
-            <form id="waitlistForm" action="https://formsubmit.co/brabelstudios@gmail.com" method="POST"
+            <form id="waitlistForm" action="https://formsubmit.co/ajax/brabelstudios@gmail.com" method="POST"
                 class="waitlist-form">
                 <input type="hidden" name="_captcha" value="false">
                 <input type="hidden" name="_subject" value="New VIP Waitlist Signup!">
-                <input type="hidden" name="_next" value="https://brabelstudios.com/">
                 <input type="hidden" name="_template" value="box">
                 <input type="hidden" name="_autoresponse"
                     value="Hi there! 👋 You've officially been added to the BrAbel Studios VIP Waitlist. We'll be in touch as soon as we open our doors. — The BrAbel Studios Team">
@@ -728,29 +727,129 @@
             const form = document.getElementById('waitlistForm');
             const btn = form.querySelector('.waitlist-btn');
 
-            form.addEventListener('submit', () => {
+            /* ---- email dedup via localStorage ---- */
+            const EMAILS_KEY = 'brabel_emails';
+            function getEmails() {
+                return JSON.parse(localStorage.getItem(EMAILS_KEY) || '[]');
+            }
+            function saveEmail(email) {
+                const list = getEmails();
+                list.push(email.trim().toLowerCase());
+                localStorage.setItem(EMAILS_KEY, JSON.stringify(list));
+            }
+            function alreadyJoined(email) {
+                return getEmails().includes(email.trim().toLowerCase());
+            }
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const emailInput = form.querySelector('[name="email"]');
+                const email = emailInput.value.trim();
+
+                // --- Duplicate check ---
+                if (alreadyJoined(email)) {
+                    showSuccess(true); // true = duplicate
+                    return;
+                }
+
                 btn.innerHTML = 'Adding to list...';
                 btn.disabled = true;
                 btn.style.opacity = '0.7';
 
-                // Increment shared count
+                // Save email locally so repeat submits are blocked
+                saveEmail(email);
+
+                // Submit via AJAX to FormSubmit
+                const data = new FormData(form);
+                fetch('https://formsubmit.co/ajax/brabelstudios@gmail.com', {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json' },
+                    body: data
+                })
+                    .then(r => r.json())
+                    .then(() => showSuccess(false))
+                    .catch(() => showSuccess(false));
+
+                // Increment shared counter
                 fetch(API_HIT, { method: 'GET' })
                     .then(r => r.json())
                     .then(d => {
                         display(d.count ?? d.value ?? 0);
-                        // Animate the bump
                         countEl.style.transition = 'transform 0.2s ease';
                         countEl.style.transform = 'scale(1.4)';
                         countEl.style.color = 'var(--color-primary)';
                         setTimeout(() => { countEl.style.transform = 'scale(1)'; }, 200);
                     })
                     .catch(() => {
-                        // Fallback: increment locally
                         const local = parseInt(localStorage.getItem(LOCAL_KEY) || '0', 10);
                         display(local + 1);
                     });
-                // Native FormSubmit.co redirect handles the rest
             });
+
+            function showSuccess(isDuplicate) {
+                form.style.display = 'none';
+                const msg = document.getElementById('formMessage');
+
+                if (isDuplicate) {
+                    msg.innerHTML = `
+                        <div style="
+                            display:flex; flex-direction:column; align-items:center;
+                            gap:12px; padding:24px 16px;
+                            background:rgba(234,88,12,0.08);
+                            border:1px solid rgba(234,88,12,0.3);
+                            border-radius:12px; animation: fadeIn .5s ease;
+                        ">
+                            <div style="
+                                width:52px; height:52px; border-radius:50%;
+                                background:rgba(234,88,12,0.15);
+                                display:flex; align-items:center; justify-content:center;
+                            ">
+                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+                                    stroke="#ea580c" stroke-width="2.5"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="8" x2="12" y2="12"/>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                </svg>
+                            </div>
+                            <p style="margin:0; font-weight:700; color:#fff; font-size:1rem;">
+                                You're already on the list! 😊
+                            </p>
+                            <p style="margin:0; color:rgba(255,255,255,0.6); font-size:0.875rem; line-height:1.5;">
+                                This email is already registered. We'll reach out on launch day!
+                            </p>
+                        </div>`;
+                } else {
+                    msg.innerHTML = `
+                        <div style="
+                            display:flex; flex-direction:column; align-items:center;
+                            gap:12px; padding:24px 16px;
+                            background:rgba(39,201,63,0.08);
+                            border:1px solid rgba(39,201,63,0.25);
+                            border-radius:12px; animation: fadeIn .5s ease;
+                        ">
+                            <div style="
+                                width:52px; height:52px; border-radius:50%;
+                                background:rgba(39,201,63,0.15);
+                                display:flex; align-items:center; justify-content:center;
+                            ">
+                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+                                    stroke="#27c93f" stroke-width="2.5"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                            </div>
+                            <p style="margin:0; font-weight:700; color:#fff; font-size:1rem;">
+                                You're on the VIP list! 🎉
+                            </p>
+                            <p style="margin:0; color:rgba(255,255,255,0.6); font-size:0.875rem; line-height:1.5;">
+                                Check your inbox — we'll reach out as soon as we launch.
+                            </p>
+                        </div>`;
+                }
+                msg.style.display = 'block';
+            }
         })();
     </script>
 </body>
