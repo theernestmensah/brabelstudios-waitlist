@@ -471,7 +471,7 @@
                     <div class="avatar av5">R</div>
                 </div>
                 <p class="social-proof-text">
-                    <strong><span id="waitlist-count"></span>200</span>+ people</strong> already on the waitlist
+                    <strong><span id="waitlist-count"></span>+ people</strong> already on the waitlist
                 </p>
             </div>
 
@@ -698,28 +698,29 @@
         })();
 
         /* =============================================
-           WAITLIST COUNT  (CountAPI shared + localStorage fallback)
+           WAITLIST COUNT  (counterapi.com shared + localStorage fallback)
            ============================================= */
         (function () {
-            const NS = 'brabelstudios.com';
-            const KEY = 'waitlist';
             const BASE = 200;   // offset so API-value 0 displays as 200
             const LOCAL_KEY = 'brabel_waitlist_api_count';
+            const API_GET = 'https://counterapi.com/api/brabelstudios/waitlist/get/json';
+            const API_HIT = 'https://counterapi.com/api/brabelstudios/waitlist/increment/json';
             const countEl = document.getElementById('waitlist-count');
 
             function display(apiVal) {
-                const n = (parseInt(apiVal, 10) || 0) + BASE;
+                const n = Math.max(0, parseInt(apiVal, 10) || 0) + BASE;
                 countEl.textContent = n;
-                localStorage.setItem(LOCAL_KEY, parseInt(apiVal, 10) || 0);
+                localStorage.setItem(LOCAL_KEY, Math.max(0, parseInt(apiVal, 10) || 0));
             }
 
-            // Show cached value instantly, then refresh from API
+            // Show cached value instantly (no flicker)
             display(localStorage.getItem(LOCAL_KEY) || 0);
 
-            fetch(`https://api.countapi.xyz/get/${NS}/${KEY}`)
+            // Then sync from live API
+            fetch(API_GET)
                 .then(r => r.json())
-                .then(d => display(d.value))
-                .catch(() => { /* keep cached/local value */ });
+                .then(d => display(d.count ?? d.value ?? 0))
+                .catch(() => { /* keep cached value */ });
 
             /* =============================================
                FORM UX
@@ -727,16 +728,16 @@
             const form = document.getElementById('waitlistForm');
             const btn = form.querySelector('.waitlist-btn');
 
-            form.addEventListener('submit', (e) => {
+            form.addEventListener('submit', () => {
                 btn.innerHTML = 'Adding to list...';
                 btn.disabled = true;
                 btn.style.opacity = '0.7';
 
-                // Hit API to increment shared count
-                fetch(`https://api.countapi.xyz/hit/${NS}/${KEY}`)
+                // Increment shared count
+                fetch(API_HIT, { method: 'GET' })
                     .then(r => r.json())
                     .then(d => {
-                        display(d.value);
+                        display(d.count ?? d.value ?? 0);
                         // Animate the bump
                         countEl.style.transition = 'transform 0.2s ease';
                         countEl.style.transform = 'scale(1.4)';
