@@ -449,7 +449,7 @@
 
             <div class="card-divider"></div>
 
-            <!-- ===== SOCIAL PROOF ===== -->
+            <!--===== SOCIAL PROOF ===== -->
             <div class="social-proof">
                 <div class="avatar-stack">
                     <div class="avatar av1">A</div>
@@ -690,8 +690,8 @@
         (function () {
             const BASE = 200;   // offset so API-value 0 displays as 200
             const LOCAL_KEY = 'brabel_waitlist_api_count';
-            const API_GET = 'https://counterapi.com/api/brabelstudios/signup/waitlist?readOnly=true';
-            const API_HIT = 'https://counterapi.com/api/brabelstudios/signup/waitlist';
+            const API_GET = '/api/counter';   // Vercel serverless function
+            const API_HIT = '/api/counter';
             const countEl = document.getElementById('waitlist-count');
 
             function display(apiVal) {
@@ -706,7 +706,7 @@
             // Then sync from live API
             fetch(API_GET)
                 .then(r => r.json())
-                .then(d => display(d.counter ?? d.count ?? d.value ?? 0))
+                .then(d => display(d.count ?? 0))
                 .catch(() => { /* keep cached value */ });
 
             /* =============================================
@@ -760,10 +760,10 @@
                     .catch(() => showSuccess(false));
 
                 // Increment shared counter
-                fetch(API_HIT, { method: 'GET' })
+                fetch(API_HIT, { method: 'POST' })
                     .then(r => r.json())
                     .then(d => {
-                        display(d.counter ?? d.count ?? d.value ?? 0);
+                        display(d.count ?? 0);
                         countEl.style.transition = 'transform 0.2s ease';
                         countEl.style.transform = 'scale(1.4)';
                         countEl.style.color = 'var(--color-primary)';
